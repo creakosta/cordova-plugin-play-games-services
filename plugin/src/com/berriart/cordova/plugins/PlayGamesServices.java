@@ -40,6 +40,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Result;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.leaderboard.*;
 import com.google.android.gms.games.achievement.*;
@@ -524,6 +525,12 @@ public class PlayGamesServices extends CordovaPlugin implements GameHelperListen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        gameHelper.onActivityResult(requestCode, resultCode, intent);
+           if (requestCode == ACTIVITY_CODE_SHOW_LEADERBOARD
+                && resultCode == GamesActivityResultCodes.RESULT_RECONNECT_REQUIRED) {
+            Log.d(LOGTAG, "Disconnection from Play Services called from activity with code: " + requestCode);
+            gameHelper.disconnect();
+        } else {
+            gameHelper.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }
